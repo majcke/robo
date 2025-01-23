@@ -3,8 +3,8 @@ import * as THREE from 'https://cdn.skypack.dev/three@0.132.2';
 //import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { OrbitControls } from "https://threejs.org/examples/jsm/controls/OrbitControls.js";
 
-import { GLTFLoader } from 'https://threejs.org/addons/loaders/GLTFLoader.js';
-import { TextureLoader } from 'https://threejs.org/';
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.146.0/examples/js/loaders/GLTFLoader.js';
+import { TextureLoader } from 'https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.min.js';
 
 window.Webflow ||= [];
 window.Webflow.push(() => {
