@@ -5,9 +5,6 @@ import { OrbitControls } from "https://threejs.org/examples/jsm/controls/OrbitCo
 
 import { GLTFLoader } from 'https://threejs.org/addons/loaders/GLTFLoader.js';
 import { TextureLoader } from 'https://threejs.org/';
-import { mix } from 'three/webgpu';
-import { TechnicolorShader } from 'three/examples/jsm/Addons.js';
-import { removeChildElements } from '@finsweet/ts-utils';
 
 window.Webflow ||= [];
 window.Webflow.push(() => {
