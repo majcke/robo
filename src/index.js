@@ -1,13 +1,15 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.module.js';
-import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/controls/OrbitControls.js';
-import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/GLTFLoader.js';
-import { TextureLoader } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/src/loaders/TextureLoader.js';
-import { mix } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/webgpu/mix.js';
-import { TechnicolorShader } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/shaders/TechnicolorShader.js'; 
-import { removeChildElements } from 'https://cdn.jsdelivr.net/npm/@finsweet/ts-utils@1.0.0/dist/index.min.js';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { TextureLoader } from 'three';
+import { mix } from 'three/webgpu';
+import { TechnicolorShader } from 'three/examples/jsm/Addons.js';
+import { removeChildElements } from '@finsweet/ts-utils';
 
 window.Webflow ||= [];
 window.Webflow.push(() => {
+  //console.log('hello');
   init3D();
 });
 
@@ -15,8 +17,9 @@ window.Webflow.push(() => {
 function init3D() {
   // select container
   const viewport = document.querySelector('[data-3d="c"]');
+  // console.log(viewport);
 
-  // create scene, renderer, and camera
+  // create scened and renderer and camera
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
   const renderer = new THREE.WebGLRenderer({
@@ -26,21 +29,37 @@ function init3D() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   viewport.appendChild(renderer.domElement);
 
+  // add an object
+  const geometry = new THREE.BoxGeometry();
+  const material = new THREE.MeshNormalMaterial();
+  const cube = new THREE.Mesh(geometry, material);
+  // scene.add(cube);
+
   // add controls
+  //const controls = new OrbitControls(camera, renderer.domElement);
   const controls = new OrbitControls(camera, document.body);
+
+
   camera.position.z = 100;
 
-  let neckBone = null;
-  let clock = new THREE.Clock();
-  let mixer = null;
+    //declaring hte bone outside the load
+    let neckBone = null;
+    let clock = new THREE.Clock();
+    let mixer = null;
 
-  const mouse = { x: 0, y: 0 };
-  window.addEventListener('mousemove', (e) => {
-    mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-  });
+    const mouse = {
+      x: 0,
+      y: 0,
+    }
 
-  // Adding lights
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;  
+      mouse.y = -(e.clientY / window.innerHeight) * 2 + 1; 
+      
+      //console.log(mouse.x);
+    })
+
+  //adding lights outside
   let dirLight;
 
   function addLight() {
@@ -53,17 +72,21 @@ function init3D() {
   }
 
   addLight();
-
+    
   function animate() {
     window.requestAnimationFrame(animate);
     controls.update();
 
-    // controlling light position with mouse
-    dirLight.position.x = mouse.x * 1;
+    //controlling light position with mouse
+    dirLight.position.x = mouse.x * 1; 
     dirLight.position.y = mouse.y * 1;
+
+    if (ob.tshirt) ob.tshirt.rotation.y += 0.01;
+
 
     renderer.render(scene, camera);
   }
+
 
   const ob = {
     zmajca: null,
@@ -74,13 +97,19 @@ function init3D() {
 
   animate();
 
-  // --- load 3D async
+
+
+  // --- load 3d async
   const assets = load();
   assets.then((data) => {
+    //console.log(data, data.objects);
     const objects = data.objects.scene;
     const animations = data.objects.animations;
 
+    //console.log(animations);
+
     objects.traverse((child) => {
+      //console.log(child);
       if (child.isMesh) {
         if (child.name === 'zmajca') {
           ob.zmajca = child;
@@ -88,15 +117,21 @@ function init3D() {
         } else if (child.name === 'mmajca') {
           ob.mmajca = child;
           ob.mmajca.visible = false;
+          // ob.cap.position.x = 2;
         } else if (child.name === 'pivski_kozarec') {
           ob.pivskikozarec = child;
           ob.pivskikozarec.visible = false;
+          // ob.mug.position.x = -2;
         } else if (child.name === 'salca') {
           ob.salca = child;
           ob.salca.visible = false;
+          // ob.mug.position.x = -2;
         }
 
+        //console.log(child.name);
+
         child.material = new THREE.MeshStandardMaterial({
+          //color: 0xff0000,      //color
           transparent: false,
         });
 
@@ -104,28 +139,41 @@ function init3D() {
       }
     });
 
+    //objects.position.y = -1;
     scene.add(objects);
+
+    //console.log(ob);
+
     initStore();
   });
 
-  // Store Setup
+  // ---------------Store Setup
+
   function initStore() {
     const shirts = [...document.querySelectorAll('[data-3d-shirt]')];
+    //console.log(shirts);
+
     shirts.forEach((shirt, i) => {
       const image = shirt.src;
       const color = shirt.getAttribute('data-3d-shirt');
       const trigger = shirt.parentElement;
-
+      //console.log(image, color, trigger);
+      
       trigger.onclick = () => changeShirt(image, color); 
-      if (i === 0) {
+      if(i == 0 ) {
         changeShirt(image, color);
       }
     });
 
+    //----------------------------Listen to different NAV items
     const navItems = [...document.querySelectorAll('[data-3d-nav]')];
+    console.log(navItems);
+
     navItems.forEach((item) => {
       item.onclick = () => {
         const name = item.getAttribute('data-3d-nav');
+        console.log(name);
+        
         if (name === 'zmajca') {
           ob.zmajca.visible = true;
           ob.mmajca.visible = false;
@@ -146,7 +194,8 @@ function init3D() {
           ob.mmajca.visible = false;
           ob.pivskikozarec.visible = false;
           ob.salca.visible = true;
-        }
+        } 
+
       };
     });
   }
@@ -154,14 +203,20 @@ function init3D() {
   async function changeShirt(image, color) {
     const texture = await loadTexture(image);
     ob.zmajca.material.map = texture;
+
     ob.zmajca.visible = true;
+
+    //console.log(texture);
   }
+
 }
 
 /* Loader Functions */
 async function load() {
   const objects = await loadModel(
-    'https://cdn.prod.website-files.com/6729eb87cfb6a5c0fb028478/67585accc532b1eac36ce515_skupaj.txt'
+    'https://cdn.prod.website-files.com/6729eb87cfb6a5c0fb028478/67585accc532b1eac36ce515_skupaj.txt' //vsi objekti skupaj: mmajca, zmajca, pivski kozarec, salca 
+    //'https://cdn.prod.website-files.com/671b5aa1d031cdfe984c73ee/6723a868acbbd0644b5654de_zenska%20majica.txt'  //zenska
+    //'https://cdn.prod.website-files.com/6729eb87cfb6a5c0fb028478/673ca05ea09ba7d6ca757a71_moska%20majica.txt' //moska
   );
 
   const texture = await loadTexture(
@@ -179,6 +234,7 @@ function loadTexture(url) {
     textureLoader.load(url, (data) => {
       data.needsUpdate = true;
       data.flipY = false;
+
       resolve(data); 
     });
   });
@@ -188,7 +244,7 @@ function loadModel(url, id) {
   return new Promise((resolve, reject) => {
     modelLoader.load(url, (gltf) => {
       const scene = gltf.scene;
-      const animations = gltf.animations;
+      const animations = gltf.animations; 
       resolve({scene, animations});
     });
   });
