@@ -3,8 +3,8 @@ import * as THREE from 'https://cdn.skypack.dev/three@0.132.2';
 //import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { OrbitControls } from "https://threejs.org/examples/jsm/controls/OrbitControls.js";
 
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { TextureLoader } from 'three';
+import { GLTFLoader } from 'https://threejs.org/addons/loaders/GLTFLoader.js';
+import { TextureLoader } from 'https://threejs.org/';
 import { mix } from 'three/webgpu';
 import { TechnicolorShader } from 'three/examples/jsm/Addons.js';
 import { removeChildElements } from '@finsweet/ts-utils';
