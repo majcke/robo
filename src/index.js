@@ -36,10 +36,14 @@ function init3D() {
 
   // add controls
   //const controls = new OrbitControls(camera, renderer.domElement);
-  const controls = new OrbitControls(camera, document.body);
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  //controls.update(); // Call this if you change the camera position
+  //const controls = new OrbitControls(camera, document.body);
 
 
   camera.position.z = 100;
+  controls.update(); // Call this if you change the camera position
+
 
     //declaring hte bone outside the load
     let neckBone = null;
