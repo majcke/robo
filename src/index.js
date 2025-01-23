@@ -1,5 +1,10 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.module.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+// Import Three.js from jsDelivr CDN
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.module.js';
+
+// If you're using any additional Three.js features, like the GLTFLoader
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three/examples/js/loaders/GLTFLoader.js';
 
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { TextureLoader } from 'three';
