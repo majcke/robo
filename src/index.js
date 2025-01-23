@@ -1,9 +1,11 @@
-import * as THREE from 'three';
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.module.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { TextureLoader } from 'three';
 import { mix } from 'three/webgpu';
+import { TechnicolorShader } from 'three/examples/jsm/Addons.js';
+import { removeChildElements } from '@finsweet/ts-utils';
 
 window.Webflow ||= [];
 window.Webflow.push(() => {
@@ -20,7 +22,10 @@ function init3D() {
   // create scened and renderer and camera
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  const renderer = new THREE.WebGLRenderer();
+  const renderer = new THREE.WebGLRenderer({
+    alpha: true,
+    antialias: true,
+  });
   renderer.setSize(window.innerWidth, window.innerHeight);
   viewport.appendChild(renderer.domElement);
 
@@ -31,12 +36,11 @@ function init3D() {
   // scene.add(cube);
 
   // add controls
-  const controls = new OrbitControls(camera, renderer.domElement);
-   controls.autoRotate = true;
-   controls.enableDamping = true;
-   controls.dampingFactor = 0.05;
+  //const controls = new OrbitControls(camera, renderer.domElement);
+  const controls = new OrbitControls(camera, document.body);
 
-  camera.position.z = 3;
+
+  camera.position.z = 100;
 
     //declaring hte bone outside the load
     let neckBone = null;
@@ -55,74 +59,171 @@ function init3D() {
       //console.log(mouse.x);
     })
 
+  //adding lights outside
+  let dirLight;
+
+  function addLight() {
+    const ambLight = new THREE.AmbientLight(0xffffff, 0.3);
+    scene.add(ambLight);
+
+    dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    dirLight.position.set(1, 1, 0.5);
+    scene.add(dirLight);
+  }
+
+  addLight();
+    
   function animate() {
     window.requestAnimationFrame(animate);
     controls.update();
 
-    if (mixer !== null) {
-      mixer.update(clock.getDelta());
-    }
+    //controlling light position with mouse
+    dirLight.position.x = mouse.x * 1; 
+    dirLight.position.y = mouse.y * 1;
 
-    if (neckBone !== null) {
-      neckBone.rotation.y = mouse.x;
-      neckBone.rotation.x = -mouse.y;
-    }
+    if (ob.tshirt) ob.tshirt.rotation.y += 0.01;
+
 
     renderer.render(scene, camera);
   }
 
+
+  const ob = {
+    zmajca: null,
+    mmajca: null,
+    pivskikozarec: null,
+    salca: null,
+  };
+
   animate();
+
 
 
   // --- load 3d async
   const assets = load();
   assets.then((data) => {
-    console.log(data, data.robot);
-    const robot = data.robot.scene;
-    const animations = data.robot.animations;
+    //console.log(data, data.objects);
+    const objects = data.objects.scene;
+    const animations = data.objects.animations;
 
     //console.log(animations);
 
-    robot.traverse((child) => {
+    objects.traverse((child) => {
+      //console.log(child);
       if (child.isMesh) {
-        child.material = new THREE.MeshBasicMaterial();
-        child.material.map = data.texture;
-      }
-
-      if (child.isBone) {
-        console.log(child.name);
-        if (child.name == "bb_neck") {
-          neckBone = child;
+        if (child.name === 'zmajca') {
+          ob.zmajca = child;
+          ob.zmajca.visible = false;
+        } else if (child.name === 'mmajca') {
+          ob.mmajca = child;
+          ob.mmajca.visible = false;
+          // ob.cap.position.x = 2;
+        } else if (child.name === 'pivski_kozarec') {
+          ob.pivskikozarec = child;
+          ob.pivskikozarec.visible = false;
+          // ob.mug.position.x = -2;
+        } else if (child.name === 'salca') {
+          ob.salca = child;
+          ob.salca.visible = false;
+          // ob.mug.position.x = -2;
         }
 
+        //console.log(child.name);
+
+        child.material = new THREE.MeshStandardMaterial({
+          //color: 0xff0000,      //color
+          transparent: false,
+        });
+
+        child.material.map = data.texture;
       }
     });
 
-    //console.log(neckBone);
+    //objects.position.y = -1;
+    scene.add(objects);
 
-    //nitialize mixer after robot is loaded
-    mixer = new THREE.AnimationMixer(robot);
-    const action = mixer.clipAction(animations[0]);
-    //console.log(action);
-    action.play();
+    //console.log(ob);
 
-
-    robot.position.y = -1;
-    scene.add(robot);
+    initStore();
   });
+
+  // ---------------Store Setup
+
+  function initStore() {
+    const shirts = [...document.querySelectorAll('[data-3d-shirt]')];
+    //console.log(shirts);
+
+    shirts.forEach((shirt, i) => {
+      const image = shirt.src;
+      const color = shirt.getAttribute('data-3d-shirt');
+      const trigger = shirt.parentElement;
+      //console.log(image, color, trigger);
+      
+      trigger.onclick = () => changeShirt(image, color); 
+      if(i == 0 ) {
+        changeShirt(image, color);
+      }
+    });
+
+    //----------------------------Listen to different NAV items
+    const navItems = [...document.querySelectorAll('[data-3d-nav]')];
+    console.log(navItems);
+
+    navItems.forEach((item) => {
+      item.onclick = () => {
+        const name = item.getAttribute('data-3d-nav');
+        console.log(name);
+        
+        if (name === 'zmajca') {
+          ob.zmajca.visible = true;
+          ob.mmajca.visible = false;
+          ob.pivskikozarec.visible = false;
+          ob.salca.visible = false;
+        } else if (name === 'mmajca') {
+          ob.zmajca.visible = false;
+          ob.mmajca.visible = true;
+          ob.pivskikozarec.visible = false;
+          ob.salca.visible = false;
+        } else if (name === 'pivskikozarec') {
+          ob.zmajca.visible = false;
+          ob.mmajca.visible = false;
+          ob.pivskikozarec.visible = true;
+          ob.salca.visible = false;
+        } else if (name === 'salca') {
+          ob.zmajca.visible = false;
+          ob.mmajca.visible = false;
+          ob.pivskikozarec.visible = false;
+          ob.salca.visible = true;
+        } 
+
+      };
+    });
+  }
+
+  async function changeShirt(image, color) {
+    const texture = await loadTexture(image);
+    ob.zmajca.material.map = texture;
+
+    ob.zmajca.visible = true;
+
+    //console.log(texture);
+  }
+
 }
 
 /* Loader Functions */
 async function load() {
-  const robot = await loadModel(
-    'https://cdn.prod.website-files.com/671b5aa1d031cdfe984c73ee/67234ddade00965b114eacf1_robot.v3-live.glb.txt'
+  const objects = await loadModel(
+    'https://cdn.prod.website-files.com/6729eb87cfb6a5c0fb028478/67585accc532b1eac36ce515_skupaj.txt' //vsi objekti skupaj: mmajca, zmajca, pivski kozarec, salca 
+    //'https://cdn.prod.website-files.com/671b5aa1d031cdfe984c73ee/6723a868acbbd0644b5654de_zenska%20majica.txt'  //zenska
+    //'https://cdn.prod.website-files.com/6729eb87cfb6a5c0fb028478/673ca05ea09ba7d6ca757a71_moska%20majica.txt' //moska
   );
 
   const texture = await loadTexture(
-    'https://uploads-ssl.webflow.com/64102f194260e3387db26189/6410867a42a4acda86412cc4_robot-texture.png'
+    'https://cdn.prod.website-files.com/671b5aa1d031cdfe984c73ee/6723aa41d98aa73cfeda5400_uv-layout.jpg'
   );
 
-  return { robot, texture };
+  return { objects, texture };
 }
 
 const textureLoader = new TextureLoader();
