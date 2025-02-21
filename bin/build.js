@@ -26,6 +26,8 @@ const context = await esbuild.context({
   define: {
     SERVE_ORIGIN: JSON.stringify(SERVE_ORIGIN),
   },
+  external: ['three'], // ✅ Fix module resolution issue for "three"
+
 });
 
 // Build files in prod
