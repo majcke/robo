@@ -1,7 +1,7 @@
-import * as THREE from 'https://cdn.skypack.dev/three@0.132.2';
+import * as THREE from 'three';
 
-//import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { OrbitControls } from "https://threejs.org/examples/jsm/controls/OrbitControls.js";
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+//import { OrbitControls } from "https://threejs.org/examples/jsm/controls/OrbitControls.js";
 
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.146.0/examples/js/loaders/GLTFLoader.js';
 import { TextureLoader } from 'https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.min.js';
@@ -35,8 +35,8 @@ function init3D() {
   // scene.add(cube);
 
   // add controls
-  //const controls = new OrbitControls(camera, renderer.domElement);
-  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  const controls = new OrbitControls(camera, renderer.domElement);
+  //const controls = new THREE.OrbitControls(camera, renderer.domElement);
   //controls.update(); // Call this if you change the camera position
   //const controls = new OrbitControls(camera, document.body);
 
