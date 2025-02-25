@@ -9,6 +9,9 @@ import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.169.0/exampl
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.146.0/examples/js/loaders/GLTFLoader.js';
 import { TextureLoader } from 'https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.min.js';
 
+console.log(THREE);
+console.log(OrbitControls);
+
 window.Webflow ||= [];
 window.Webflow.push(() => {
   //console.log('hello');
