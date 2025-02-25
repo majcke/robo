@@ -26,7 +26,7 @@ const context = await esbuild.context({
   define: {
     SERVE_ORIGIN: JSON.stringify(SERVE_ORIGIN),
   },
-  external: [],  // ⛔ Remove 'three' from external so it's bundled
+  //external: [],  // ⛔ Remove 'three' from external so it's bundled
 
 });
 
