@@ -1,12 +1,8 @@
 //import * as THREE from 'three';
 //import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
-//import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js';
-//import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/controls/OrbitControls.js';
-
-import * as THREE from 'https://esm.sh/three@0.169.0';
-import { OrbitControls } from 'https://esm.sh/three@0.169.0/examples/jsm/controls/OrbitControls.js';
-
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js';
+import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/controls/OrbitControls.js';
 
 //import { OrbitControls } from "https://threejs.org/examples/jsm/controls/OrbitControls.js";
 
