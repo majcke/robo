@@ -12,7 +12,9 @@ const ENTRY_POINTS = ['src/index.js'];
 // Config dev serving
 const LIVE_RELOAD = !PRODUCTION;
 const SERVE_PORT = 3000;
-const SERVE_ORIGIN = `http://localhost:${SERVE_PORT}`;
+//const SERVE_ORIGIN = `http://localhost:${SERVE_PORT}`; change 1 out
+const SERVE_ORIGIN = window.location.origin;  //change 1 in
+
 
 // Create context
 const context = await esbuild.context({
