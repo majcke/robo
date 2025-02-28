@@ -2,14 +2,17 @@
 //import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js';
-//import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/controls/OrbitControls.js'; //last change out
-import { OrbitControls } from 'https://esm.sh/three@0.169.0/examples/jsm/controls/OrbitControls.js'; //last change in
+//import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/controls/OrbitControls.js'; //1 change out
+import { OrbitControls } from 'https://esm.sh/three@0.169.0/examples/jsm/controls/OrbitControls.js'; //1 change in
 
 
 //import { OrbitControls } from "https://threejs.org/examples/jsm/controls/OrbitControls.js";
 
-import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.146.0/examples/js/loaders/GLTFLoader.js';
-import { TextureLoader } from 'https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.min.js';
+//import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.146.0/examples/js/loaders/GLTFLoader.js';  //2 out
+//import { TextureLoader } from 'https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.min.js';  //2 out
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.169.0/examples/js/loaders/GLTFLoader.js';  //2 in
+import { TextureLoader } from 'https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.min.js';  //2 in
+
 
 window.Webflow ||= [];
 window.Webflow.push(() => {
