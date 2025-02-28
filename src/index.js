@@ -10,8 +10,10 @@ import { OrbitControls } from 'https://esm.sh/three@0.169.0/examples/jsm/control
 
 //import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.146.0/examples/js/loaders/GLTFLoader.js';  //2 out
 //import { TextureLoader } from 'https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.min.js';  //2 out
-import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.169.0/examples/js/loaders/GLTFLoader.js';  //2 in
-import { TextureLoader } from 'https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.min.js';  //2 in
+//import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.169.0/examples/js/loaders/GLTFLoader.js';  //2 in  3out
+//mport { TextureLoader } from 'https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.min.js';  //2 in 3 out
+import { TextureLoader } from 'https://esm.sh/three@0.169.0'; //3 n
+import { GLTFLoader } from 'https://esm.sh/three@0.169.0/examples/jsm/loaders/GLTFLoader.js'; //3 in
 
 
 window.Webflow ||= [];
